@@ -31,17 +31,20 @@ class ConnectFour
     print_board
     print 'Which column would you like to play in? '
     column = gets.chomp.to_i
-    make_play(player, column)
-  end
 
-  def make_play(player, column)
-    piece = Piece.new(1,column)
+    @game_board.each_with_index do |row, index|
+      make_play(player, index - 1, column) if row[column] != ' '
+    end
+   end
+
+  def make_play(player, row, column)
+    piece = Piece.new(row,column)
     player.plays << piece
     update_board(player)
   end
 
   def update_board(player)
-    @game_board[@game_board.size - 2][player.plays.last.column] = "X"
+    @game_board[player.plays.last.row][player.plays.last.column] = "X"
     print_board
   end
 
