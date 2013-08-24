@@ -22,6 +22,9 @@ class ConnectFour
     select_column(@player1)
     select_column(@player2)
     select_column(@player1)
+    select_column(@player2)
+    select_column(@player1)
+    select_column(@player2)
   end
 
   def get_names
@@ -47,8 +50,13 @@ class ConnectFour
   def validate
     loop do
       column = gets.chomp.to_i
-      return column if (1..@game_board[0].length - 2).include?(column)
-      print 'Invalid column, choose again: '
+      if !(1..@game_board[0].length - 2).include?(column)
+        print 'Invalid column, choose again: '
+      elsif @game_board[0][column] != ' '
+        print 'Column is full, choose again: '
+      else
+        return column
+      end
     end
   end
 
