@@ -16,6 +16,11 @@ class ConnectFour
 
   def start
     get_names
+    print_board
+    select_column(@player1)
+    select_column(@player2)
+    select_column(@player1)
+    select_column(@player2)
     select_column(@player1)
   end
 
@@ -28,14 +33,24 @@ class ConnectFour
   end
 
   def select_column(player)
-    print_board
     print 'Which column would you like to play in? '
-    column = gets.chomp.to_i
+    column = validate
 
     @game_board.each_with_index do |row, index|
-      make_play(player, index - 1, column) if row[column] != ' '
+      if row[column] != ' '
+        make_play(player, index - 1, column)
+        break
+      end
     end
    end
+
+  def validate
+    loop do
+      column = gets.chomp.to_i
+      return column if (1..@game_board[0].length - 2).include?(column)
+      print 'Invalid column, choose again: '
+    end
+  end
 
   def make_play(player, row, column)
     piece = Piece.new(row,column)
