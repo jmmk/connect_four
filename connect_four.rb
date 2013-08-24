@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require './player'
+require './piece'
 
 class ConnectFour
 
@@ -27,16 +28,26 @@ class ConnectFour
   end
 
   def select_column(player)
-    @game_board.each {|line| puts line.join(' ')}
+    print_board
     print 'Which column would you like to play in? '
-    column = gets.chomp
+    column = gets.chomp.to_i
     make_play(player, column)
   end
 
   def make_play(player, column)
-    player.plays << Piece.new(0,column)
+    piece = Piece.new(1,column)
+    player.plays << piece
+    update_board(player)
   end
 
+  def update_board(player)
+    @game_board[@game_board.size - 2][player.plays.last.column] = "X"
+    print_board
+  end
+
+  def print_board
+    @game_board.each {|line| puts line.join(' ')}
+  end
 
 end
 
