@@ -5,6 +5,7 @@ require './piece'
 class ConnectFour
 
   def initialize
+    puts "Go for it... Connect Four!"
     @game_board = [['|',' ',' ',' ',' ',' ',' ',' ','|'],
                   ['|',' ',' ',' ',' ',' ',' ',' ','|'],
                   ['|',' ',' ',' ',' ',' ',' ',' ','|'],
@@ -62,6 +63,7 @@ class ConnectFour
   def update_board(player)
     @game_board[player.plays.last.row][player.plays.last.column] = player.token
     print_board
+    winner(player) if set_connections(player, player.plays.last)
   end
 
   def print_board
@@ -73,6 +75,52 @@ class ConnectFour
       select_column(player)
       player = player == @player1 ? @player2 : @player1
     end
+  end
+
+  def set_connections(player, current_piece)
+    player.plays.each do |piece|
+      break if piece == current_piece
+
+      if piece.row == current_piece.row
+        set_horizontal_connections(player, piece, current_piece)
+      elsif piece.column == current_piece.column
+        set_vertical_connections(player, piece, current_piece)
+      end
+    end
+
+    check_connections(player)
+  end
+
+  def set_horizontal_connections(player, piece, current_piece)
+      if piece.column == current_piece.column - 1
+        piece.right = current_piece
+        current_piece.left = piece
+      elsif piece.column == current_piece.column + 1
+        piece.left = current_piece
+        current_piece.right = piece
+      end
+  end
+
+  def set_vertical_connections(player, piece, current_piece)
+      if piece.row == current_piece.row - 1
+        piece.botttom = current_piece
+        current_piece.top = piece
+      elsif piece.row == current_piece.row + 1
+        piece.top = current_piece
+        current_piece.bottom = piece
+      end
+  end
+
+  def set_diagonal_connections
+  end
+
+  def check_connections(player)
+    false
+  end
+
+  def winner(player)
+    puts "Congratulations, #{ player.name } is the winner!"
+    exit
   end
 
 end
