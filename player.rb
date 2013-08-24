@@ -1,9 +1,10 @@
 class Player
-  attr_accessor :name, :plays
+  attr_accessor :name, :plays, :token
 
-  def initialize(name)
+  def initialize(name, token)
     @name = name
     @plays = []
+    @token = token
   end
 
 end

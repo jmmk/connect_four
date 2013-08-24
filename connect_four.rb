@@ -17,16 +17,13 @@ class ConnectFour
   def start
     get_names
     select_column(@player1)
-    select_column(@player1)
-    select_column(@player1)
-    select_column(@player1)
   end
 
   def get_names
     print "Please enter the first player's name: "
-    @player1 = Player.new(gets.chomp)
+    @player1 = Player.new(gets.chomp, "X")
     print "Please enter the second player's name: "
-    @player2 = Player.new(gets.chomp)
+    @player2 = Player.new(gets.chomp, "O")
     @player2.name << '-2' if @player2.name == @player1.name
   end
 
@@ -47,7 +44,7 @@ class ConnectFour
   end
 
   def update_board(player)
-    @game_board[player.plays.last.row][player.plays.last.column] = "X"
+    @game_board[player.plays.last.row][player.plays.last.column] = player.token
     print_board
   end
 
