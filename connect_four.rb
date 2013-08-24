@@ -34,7 +34,7 @@ class ConnectFour
   end
 
   def make_play(player, column)
-
+    player.plays << Piece.new(0,column)
   end
 
 
