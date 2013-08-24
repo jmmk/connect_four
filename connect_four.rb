@@ -17,6 +17,9 @@ class ConnectFour
   def start
     get_names
     select_column(@player1)
+    select_column(@player1)
+    select_column(@player1)
+    select_column(@player1)
   end
 
   def get_names
