@@ -17,14 +17,7 @@ class ConnectFour
   def start
     get_names
     print_board
-    select_column(@player1)
-    select_column(@player2)
-    select_column(@player1)
-    select_column(@player2)
-    select_column(@player1)
-    select_column(@player2)
-    select_column(@player1)
-    select_column(@player2)
+    rotate_play(@player1)
   end
 
   def get_names
@@ -36,7 +29,7 @@ class ConnectFour
   end
 
   def select_column(player)
-    print 'Which column would you like to play in? '
+    print "#{ player.name }, which column would you like to play in? "
     column = validate
 
     @game_board.each_with_index do |row, index|
@@ -73,6 +66,13 @@ class ConnectFour
 
   def print_board
     @game_board.each {|line| puts line.join(' ')}
+  end
+
+  def rotate_play(player)
+    loop do
+      select_column(player)
+      player = player == @player1 ? @player2 : @player1
+    end
   end
 
 end
