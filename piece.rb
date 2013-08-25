@@ -4,6 +4,7 @@ class Piece
   def initialize(row, column)
     @row = row
     @column = column
+    @left = @right = @top = @bottom = nil
   end
 
 end

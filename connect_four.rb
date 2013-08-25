@@ -82,16 +82,16 @@ class ConnectFour
       break if piece == current_piece
 
       if piece.row == current_piece.row
-        set_horizontal_connections(player, piece, current_piece)
+        set_horizontal_connections(piece, current_piece)
       elsif piece.column == current_piece.column
-        set_vertical_connections(player, piece, current_piece)
+        set_vertical_connections(piece, current_piece)
       end
     end
 
-    check_connections(player)
+    check_connections(current_piece)
   end
 
-  def set_horizontal_connections(player, piece, current_piece)
+  def set_horizontal_connections(piece, current_piece)
       if piece.column == current_piece.column - 1
         piece.right = current_piece
         current_piece.left = piece
@@ -101,7 +101,7 @@ class ConnectFour
       end
   end
 
-  def set_vertical_connections(player, piece, current_piece)
+  def set_vertical_connections(piece, current_piece)
       if piece.row == current_piece.row - 1
         piece.botttom = current_piece
         current_piece.top = piece
@@ -114,8 +114,27 @@ class ConnectFour
   def set_diagonal_connections
   end
 
-  def check_connections(player)
-    false
+  def check_connections(current_piece)
+    check_vertical_connections(current_piece.bottom, 1) if current_piece.bottom
+    check_horizontal_connections(current_piece)
+  end
+
+  def check_horizontal_connections(current_piece)
+  end
+
+  def check_left
+  end
+
+  def check_right
+  end
+
+  def check_vertical_connections(current_piece, count)
+    if current_piece.bottom
+      return true if count == 2
+      check_vertical_connections(current_piece.bottom, count + 1)
+    else
+      return false
+    end
   end
 
   def winner(player)
