@@ -62,8 +62,8 @@ class ConnectFour
 
   def update_board(player)
     @game_board[player.plays.last.row][player.plays.last.column] = player.token
-    tie_game if !@game_board[0].include?(' ')
     print_board
+    tie_game if !@game_board[0].include?(' ')
     set_connections(player, player.plays.last)
   end
 
@@ -154,12 +154,13 @@ class ConnectFour
   end
 
   def winner(player)
-    puts "Congratulations, #{ player.name } is the winner!"
+    puts 'Congratulations, #{ player.name } is the winner!'
     exit
   end
 
   def tie_game
-
+    puts "\nOH NO! It's a tie!"
+    exit
   end
 
 end
