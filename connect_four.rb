@@ -82,11 +82,8 @@ class ConnectFour
     player.plays.each do |piece|
       break if piece == current_piece
 
-      if piece.row == current_piece.row
-        set_horizontal_connections(piece, current_piece)
-      elsif piece.column == current_piece.column
-        set_vertical_connections(piece, current_piece)
-      end
+      set_horizontal_connections(piece, current_piece)
+      set_vertical_connections(piece, current_piece)
       set_diagonal_connections(piece, current_piece)
     end
 
