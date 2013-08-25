@@ -62,8 +62,9 @@ class ConnectFour
 
   def update_board(player)
     @game_board[player.plays.last.row][player.plays.last.column] = player.token
+    tie_game if !@game_board[0].include?(' ')
     print_board
-    winner(player) if set_connections(player, player.plays.last)
+    set_connections(player, player.plays.last)
   end
 
   def print_board
@@ -88,7 +89,7 @@ class ConnectFour
       end
     end
 
-    check_connections(current_piece)
+    check_connections(player, current_piece)
   end
 
   def set_horizontal_connections(piece, current_piece)
@@ -114,32 +115,51 @@ class ConnectFour
   def set_diagonal_connections
   end
 
-  def check_connections(current_piece)
-    check_vertical_connections(current_piece.bottom, 1) if current_piece.bottom
-    check_horizontal_connections(current_piece)
+  def check_connections(player, current_piece)
+    check_vertical_connections(player, current_piece.bottom) if current_piece.bottom
+    check_horizontal_connections(player, current_piece) if current_piece.right || current_piece.left
   end
 
-  def check_horizontal_connections(current_piece)
+  def check_horizontal_connections(player, current_piece)
+    count = 0
+    count += check_left(player, current_piece.left) if current_piece.left
+    count += check_right(player, current_piece.right) if current_piece.right
+
+    winner(player) if count >= 3
   end
 
-  def check_left
-  end
-
-  def check_right
-  end
-
-  def check_vertical_connections(current_piece, count)
-    if current_piece.bottom
-      return true if count == 2
-      check_vertical_connections(current_piece.bottom, count + 1)
+  def check_left(player, current_piece, count = 1)
+    if current_piece.left
+      winner(player) if count == 2
+      check_left(player, current_piece.left, count + 1)
     else
-      return false
+      count
+    end
+  end
+
+  def check_right(player, current_piece, count = 1)
+    if current_piece.right
+      winner(player) if count == 2
+      check_right(player, current_piece.right, count + 1)
+    else
+      count
+    end
+  end
+
+  def check_vertical_connections(player, current_piece, count = 1)
+    if current_piece.bottom
+      winner(player) if count == 2
+      check_vertical_connections(player, current_piece.bottom, count + 1)
     end
   end
 
   def winner(player)
     puts "Congratulations, #{ player.name } is the winner!"
     exit
+  end
+
+  def tie_game
+
   end
 
 end
