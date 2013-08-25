@@ -130,10 +130,15 @@ class ConnectFour
   end
 
   def check_connections(player, current_piece)
-    check_axis(player, current_piece, :bottom, :top)
-    check_axis(player, current_piece, :upright, :downleft)
-    check_axis(player, current_piece, :upleft, :downright)
-    check_axis(player, current_piece, :left, :right)
+    directions = [[:left, :right], [:bottom, :top],
+                  [:upright, :downleft], [:upleft, :downright]]
+
+    directions.each do |axes|
+      count = 0
+      count += check_line(player, current_piece.send(axes[0]), axes[0]) if current_piece.send(axes[0])
+      count += check_line(player, current_piece.send(axes[1]), axes[1]) if current_piece.send(axes[1])
+      winner(player) if count >= 3
+    end
   end
 
   def check_line(player, current_piece, direction, count = 1)
@@ -143,13 +148,6 @@ class ConnectFour
     else
       count
     end
-  end
-
-  def check_axis(player, current_piece, direction, direction_two)
-    count = 0
-    count += check_line(player, current_piece.send(direction), direction) if current_piece.send(direction)
-    count += check_line(player, current_piece.send(direction_two), direction_two) if current_piece.send(direction_two)
-    winner(player) if count >= 3
   end
 
   def winner(player)
