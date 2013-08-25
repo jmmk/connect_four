@@ -87,6 +87,7 @@ class ConnectFour
       elsif piece.column == current_piece.column
         set_vertical_connections(piece, current_piece)
       end
+      set_diagonal_connections(piece, current_piece)
     end
 
     check_connections(player, current_piece)
@@ -112,7 +113,20 @@ class ConnectFour
       end
   end
 
-  def set_diagonal_connections
+  def set_diagonal_connections(piece, current_piece)
+    if piece.column == current_piece.column - 1 && piece.row == current_piece.row + 1
+      piece.upright = current_piece
+      current_piece.downleft = piece
+    elsif piece.column == current_piece.column + 1 && piece.row == current_piece.row - 1
+      piece.downleft = current_piece
+      current_piece.upright = piece
+    elsif piece.column == current_piece.column + 1 && piece.row == current_piece.row + 1
+      piece.upleft = current_piece
+      current_piece.downright = piece
+    elsif piece.column == current_piece.column - 1 && piece.row == current_piece.row - 1
+      piece.downright = current_piece
+      current_piece.upleft = piece
+    end
   end
 
   def check_connections(player, current_piece)
