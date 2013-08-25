@@ -154,7 +154,7 @@ class ConnectFour
   end
 
   def winner(player)
-    puts 'Congratulations, #{ player.name } is the winner!'
+    puts "Congratulations, #{ player.name } is the winner!"
     exit
   end
 
