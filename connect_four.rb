@@ -130,7 +130,7 @@ class ConnectFour
   end
 
   def check_connections(player, current_piece)
-    check_vertical_connections(player, current_piece.bottom) if current_piece.bottom
+    check_axis(player, current_piece, :bottom, :top)
     check_axis(player, current_piece, :upright, :downleft)
     check_axis(player, current_piece, :upleft, :downright)
     check_axis(player, current_piece, :left, :right)
@@ -142,13 +142,6 @@ class ConnectFour
       check_line(player, current_piece.send(direction), direction, count + 1)
     else
       count
-    end
-  end
-
-  def check_vertical_connections(player, current_piece, count = 1)
-    if current_piece.bottom
-      winner(player) if count == 2
-      check_vertical_connections(player, current_piece.bottom, count + 1)
     end
   end
 
