@@ -137,25 +137,16 @@ class ConnectFour
 
   def check_horizontal_connections(player, current_piece)
     count = 0
-    count += check_left(player, current_piece.left) if current_piece.left
-    count += check_right(player, current_piece.right) if current_piece.right
+    count += check_line(player, current_piece.left, :left) if current_piece.left
+    count += check_line(player, current_piece.right, :right) if current_piece.right
 
     winner(player) if count >= 3
   end
 
-  def check_left(player, current_piece, count = 1)
-    if current_piece.left
+  def check_line(player, current_piece, direction, count = 1)
+    if current_piece.send(direction)
       winner(player) if count == 2
-      check_left(player, current_piece.left, count + 1)
-    else
-      count
-    end
-  end
-
-  def check_right(player, current_piece, count = 1)
-    if current_piece.right
-      winner(player) if count == 2
-      check_right(player, current_piece.right, count + 1)
+      check_line(player, current_piece.send(direction), direction, count + 1)
     else
       count
     end
@@ -175,54 +166,18 @@ class ConnectFour
 
   def check_diagonal_forward(player, current_piece)
     count = 0
-    count += check_upright(player, current_piece.upright) if current_piece.upright
-    count += check_downleft(player, current_piece.downleft) if current_piece.downleft
+    count += check_line(player, current_piece.upright, :upright) if current_piece.upright
+    count += check_line(player, current_piece.downleft, :downleft) if current_piece.downleft
 
     winner(player) if count >= 3
   end
 
   def check_diagonal_backward(player, current_piece)
     count = 0
-    count += check_downright(player, current_piece.downright) if current_piece.downright
-    count += check_upleft(player, current_piece.upleft) if current_piece.upleft
+    count += check_line(player, current_piece.downright, :downright) if current_piece.downright
+    count += check_line(player, current_piece.upleft, :upleft) if current_piece.upleft
 
     winner(player) if count >= 3
-  end
-
-  def check_upright(player, current_piece, count = 1)
-    if current_piece.upright
-      winner(player) if count == 2
-      check_upright(player, current_piece.upright, count + 1)
-    else
-      count
-    end
-  end
-
-  def check_downleft(player, current_piece, count = 1)
-    if current_piece.downleft
-      winner(player) if count == 2
-      check_downleft(player, current_piece.downleft, count + 1)
-    else
-      count
-    end
-  end
-
-  def check_downright(player, current_piece, count = 1)
-    if current_piece.downright
-      winner(player) if count == 2
-      check_downright(player, current_piece.downright, count + 1)
-    else
-      count
-    end
-  end
-
-  def check_upleft(player, current_piece, count = 1)
-    if current_piece.upleft
-      winner(player) if count == 2
-      check_upleft(player, current_piece.upleft, count + 1)
-    else
-      count
-    end
   end
 
   def winner(player)
