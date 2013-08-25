@@ -132,6 +132,7 @@ class ConnectFour
   def check_connections(player, current_piece)
     check_vertical_connections(player, current_piece.bottom) if current_piece.bottom
     check_horizontal_connections(player, current_piece) if current_piece.right || current_piece.left
+    check_diagonal_connections(player, current_piece)
   end
 
   def check_horizontal_connections(player, current_piece)
@@ -164,6 +165,63 @@ class ConnectFour
     if current_piece.bottom
       winner(player) if count == 2
       check_vertical_connections(player, current_piece.bottom, count + 1)
+    end
+  end
+
+  def check_diagonal_connections(player, current_piece)
+    check_diagonal_forward(player, current_piece)
+    check_diagonal_backward(player, current_piece)
+  end
+
+  def check_diagonal_forward(player, current_piece)
+    count = 0
+    count += check_upright(player, current_piece.upright) if current_piece.upright
+    count += check_downleft(player, current_piece.downleft) if current_piece.downleft
+
+    winner(player) if count >= 3
+  end
+
+  def check_diagonal_backward(player, current_piece)
+    count = 0
+    count += check_downright(player, current_piece.downright) if current_piece.downright
+    count += check_upleft(player, current_piece.upleft) if current_piece.upleft
+
+    winner(player) if count >= 3
+  end
+
+  def check_upright(player, current_piece, count = 1)
+    if current_piece.upright
+      winner(player) if count == 2
+      check_upright(player, current_piece.upright, count + 1)
+    else
+      count
+    end
+  end
+
+  def check_downleft(player, current_piece, count = 1)
+    if current_piece.downleft
+      winner(player) if count == 2
+      check_downleft(player, current_piece.downleft, count + 1)
+    else
+      count
+    end
+  end
+
+  def check_downright(player, current_piece, count = 1)
+    if current_piece.downright
+      winner(player) if count == 2
+      check_downright(player, current_piece.downright, count + 1)
+    else
+      count
+    end
+  end
+
+  def check_upleft(player, current_piece, count = 1)
+    if current_piece.upleft
+      winner(player) if count == 2
+      check_upleft(player, current_piece.upleft, count + 1)
+    else
+      count
     end
   end
 
