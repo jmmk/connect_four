@@ -131,16 +131,9 @@ class ConnectFour
 
   def check_connections(player, current_piece)
     check_vertical_connections(player, current_piece.bottom) if current_piece.bottom
-    check_horizontal_connections(player, current_piece) if current_piece.right || current_piece.left
-    check_diagonal_connections(player, current_piece)
-  end
-
-  def check_horizontal_connections(player, current_piece)
-    count = 0
-    count += check_line(player, current_piece.left, :left) if current_piece.left
-    count += check_line(player, current_piece.right, :right) if current_piece.right
-
-    winner(player) if count >= 3
+    check_axis(player, current_piece, :upright, :downleft)
+    check_axis(player, current_piece, :upleft, :downright)
+    check_axis(player, current_piece, :left, :right)
   end
 
   def check_line(player, current_piece, direction, count = 1)
@@ -159,24 +152,10 @@ class ConnectFour
     end
   end
 
-  def check_diagonal_connections(player, current_piece)
-    check_diagonal_forward(player, current_piece)
-    check_diagonal_backward(player, current_piece)
-  end
-
-  def check_diagonal_forward(player, current_piece)
+  def check_axis(player, current_piece, direction, direction_two)
     count = 0
-    count += check_line(player, current_piece.upright, :upright) if current_piece.upright
-    count += check_line(player, current_piece.downleft, :downleft) if current_piece.downleft
-
-    winner(player) if count >= 3
-  end
-
-  def check_diagonal_backward(player, current_piece)
-    count = 0
-    count += check_line(player, current_piece.downright, :downright) if current_piece.downright
-    count += check_line(player, current_piece.upleft, :upleft) if current_piece.upleft
-
+    count += check_line(player, current_piece.send(direction), direction) if current_piece.send(direction)
+    count += check_line(player, current_piece.send(direction_two), direction_two) if current_piece.send(direction_two)
     winner(player) if count >= 3
   end
 
