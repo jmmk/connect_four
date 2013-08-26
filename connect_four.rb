@@ -39,7 +39,7 @@ class ConnectFour
         break
       end
     end
-   end
+  end
 
   def validate
     loop do
