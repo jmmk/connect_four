@@ -3,6 +3,16 @@ require 'pry'
 class GameBoard
   attr_reader :board, :rows, :columns, :plays
 
+  CONNECTIONS = {
+    '[0][0]' => 'downleft',
+    '[0][1]' => 'bottom',
+    '[0][2]' => 'downright',
+    '[1][0]' => 'left',
+    '[1][2]' => 'right',
+    '[2][0]' => 'upleft',
+    '[2][2]' => 'upright'
+  }
+
   def initialize(rows, columns)
     @rows = rows
     @columns = columns
@@ -43,23 +53,25 @@ class GameBoard
   end
 
   def update(player, piece)
-    @plays[piece.column] << piece
-    piece.row = get_row(piece.column)
-    @board[piece.row - 1][piece.column] = player.token
+    column = piece.column
+
+    @plays[column - 1] << piece
+    piece.row = get_row(column)
+    @board[piece.row][column] = player.token
     set_connections(piece)
   end
 
   def check_connections(current_piece)
-    directions = [
+    axes = [
       [:left, :right],
       [:bottom, :top],
       [:upright, :downleft],
       [:upleft, :downright]
     ]
 
-    directions.each do |axes|
+    axes.each do |axis|
       count = 0
-      axes.each do |direction|
+      axis.each do |direction|
         count += check_line(current_piece.send(direction), direction) if current_piece.send(direction)
       end
 
@@ -72,75 +84,53 @@ class GameBoard
     !@board[0].include?(' ')
   end
 
+  private
+
   def get_row(column)
-    @columns - @plays[column].length
+    @rows - @plays[column - 1].length
   end
 
-  private
+  def valid_row?(row)
+    (1..@rows).include?(row) ? true : false
+  end
 
   def valid_column?(column)
     (1..@columns).include?(column) ? true : false
   end
 
   def full_column?(column)
-    @plays[column].length >= @rows ? true : false
+    @plays[column - 1].length >= @rows ? true : false
+  end
+
+  def connection_columns(piece)
+    column = piece.column - 1
+    [column - 1, column, column + 1]
+  end
+
+  def connection_rows(piece)
+    row = @plays[piece.column - 1].length - 1
+    [row - 1, row, row + 1]
   end
 
   def set_connections(current_piece)
-    @plays.each do |row|
-      row.each do |piece|
-        break if piece.nil? || piece == current_piece
-        next if piece.player != current_piece.player
+    columns = connection_columns(current_piece)
+    rows = connection_rows(current_piece)
 
-        if piece.row == current_piece.row
-          set_horizontal_connections(piece, current_piece)
-        elsif piece.column == current_piece.column
-          set_vertical_connections(piece, current_piece)
+    rows.each_with_index do |row, r|
+      columns.each_with_index do |col, c|
+        break if !valid_row?(row + 1)
+        next if !valid_column?(col + 1)
+
+        piece = @plays[col][row]
+        if !piece.nil? && piece != current_piece && piece.player == current_piece.player
+          current_piece.send("#{CONNECTIONS["[#{r}][#{c}]"]}=", piece)
         end
-        set_diagonal_connections(piece, current_piece)
       end
-    end
-  end
-
-  def set_horizontal_connections(piece, current_piece)
-      if piece.column == current_piece.column - 1
-        piece.right = current_piece
-        current_piece.left = piece
-      elsif piece.column == current_piece.column + 1
-        piece.left = current_piece
-        current_piece.right = piece
-      end
-  end
-
-  def set_vertical_connections(piece, current_piece)
-      if piece.row == current_piece.row - 1
-        piece.botttom = current_piece
-        current_piece.top = piece
-      elsif piece.row == current_piece.row + 1
-        piece.top = current_piece
-        current_piece.bottom = piece
-      end
-  end
-
-  def set_diagonal_connections(piece, current_piece)
-    if piece.column == current_piece.column - 1 && piece.row == current_piece.row + 1
-      piece.upright = current_piece
-      current_piece.downleft = piece
-    elsif piece.column == current_piece.column + 1 && piece.row == current_piece.row - 1
-      piece.downleft = current_piece
-      current_piece.upright = piece
-    elsif piece.column == current_piece.column + 1 && piece.row == current_piece.row + 1
-      piece.upleft = current_piece
-      current_piece.downright = piece
-    elsif piece.column == current_piece.column - 1 && piece.row == current_piece.row - 1
-      piece.downright = current_piece
-      current_piece.upleft = piece
     end
   end
 
   def check_line(current_piece, direction, count = 1)
     if current_piece.send(direction)
-      # return true if count == 2
       check_line(current_piece.send(direction), direction, count + 1)
     else
       count
