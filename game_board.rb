@@ -29,7 +29,7 @@ class GameBoard
     @board.each { |row| puts row.join(' ') }
   end
 
-  def get_column_choice
+  def get_valid_column
     loop do
       column = gets.chomp.to_i
       if !valid_column?(column)
@@ -50,13 +50,19 @@ class GameBoard
   end
 
   def check_connections(current_piece)
-    directions = [[:left, :right], [:bottom, :top],
-                  [:upright, :downleft], [:upleft, :downright]]
+    directions = [
+      [:left, :right],
+      [:bottom, :top],
+      [:upright, :downleft],
+      [:upleft, :downright]
+    ]
 
     directions.each do |axes|
       count = 0
-      count += check_line(current_piece.send(axes[0]), axes[0]) if current_piece.send(axes[0])
-      count += check_line(current_piece.send(axes[1]), axes[1]) if current_piece.send(axes[1])
+      axes.each do |direction|
+        count += check_line(current_piece.send(direction), direction) if current_piece.send(direction)
+      end
+
       return true if count >= 3
     end
     false

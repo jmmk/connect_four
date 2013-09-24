@@ -23,12 +23,12 @@ class ConnectFour
     @player1 = Player.new(gets.chomp, "X")
     print "Please enter the second player's name: "
     @player2 = Player.new(gets.chomp, "O")
-    @player2.name << '-2' if @player2.name == @player1.name
+    make_names_unique
   end
 
   def select_column(player)
     print "#{ player.name }, which column would you like to play in? "
-    column = @game_board.get_column_choice
+    column = @game_board.get_valid_column
     make_play(player, column)
   end
 
@@ -52,6 +52,10 @@ class ConnectFour
   end
 
   private
+
+  def make_names_unique
+    @player2.name << '-2' if @player2.name == @player1.name
+  end
 
   def switch_player(player)
     player == @player1 ? @player2 : @player1
