@@ -1,0 +1,12 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    artemis (0.0.1)
+    curses (1.0.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  artemis
+  curses

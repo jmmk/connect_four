@@ -1,77 +1,49 @@
 #!/usr/bin/env ruby
 
-require './player'
-require './piece'
-require './game_board'
-require 'pry'
+require 'artemis'
+require 'curses'
+
+require_relative 'entity_factory'
+
+require_relative 'systems/static_render_system'
+require_relative 'systems/input_system'
 
 class ConnectFour
 
-  def initialize
-    puts "Go for it... Connect Four!"
-    @game_board = GameBoard.new(6, 7)
-  end
+    def initialize
+        Curses.init_screen
+        Curses.cbreak
+        Curses.noecho
+        Curses.curs_set(0) # hide cursor
 
-  def start
-    get_names
-    @game_board.print_board
-    rotate_play(@player1)
-  end
+        @screen = Curses.stdscr
+        @screen.nodelay = true
+        @screen.keypad = true
 
-  def get_names
-    print "Please enter the first player's name: "
-    @player1 = Player.new(gets.chomp, "X")
-    print "Please enter the second player's name: "
-    @player2 = Player.new(gets.chomp, "O")
-    make_names_unique
-  end
+        @world = Artemis::World.new
 
-  def select_column(player)
-    print "#{ player.name }, which column would you like to play in? "
-    column = @game_board.get_valid_column
-    make_play(player, column)
-  end
+        @world.add_manager(Artemis::GroupManager.new)
 
-  def make_play(player, column)
-    piece = Piece.new(column, player)
-    check_game_status(player, piece)
-  end
+        @world.set_system(InputSystem.new(@screen)).setup
+        @world.set_system(StaticRenderSystem.new(@screen)).setup
 
-  def check_game_status(player, piece)
-    @game_board.update(player, piece)
-    @game_board.print_board
-    declare_winner(player) if @game_board.check_connections(piece)
-    tie_game if @game_board.full?
-  end
-
-  def rotate_play(player)
-    loop do
-      select_column(player)
-      player = switch_player(player)
+        EntityFactory.create_title(@world).add_to_world
+        EntityFactory.create_board(@world).add_to_world
+        EntityFactory.create_selection(@world).add_to_world
     end
-  end
 
-  private
-
-  def make_names_unique
-    @player2.name << '-2' if @player2.name == @player1.name
-  end
-
-  def switch_player(player)
-    player == @player1 ? @player2 : @player1
-  end
-
-  def tie_game
-    puts "\nOH NO! It's a tie!"
-    exit
-  end
-
-  def declare_winner(player)
-    puts "Congratulations, #{ player.name } is the winner!"
-    exit
-  end
-
+    def start
+        current_time = Time.now
+        loop do # event
+            elapsed_time = Time.now - current_time
+            if elapsed_time >= 1.0 / 30 # FPS
+                current_time = Time.now
+                @world.delta = elapsed_time
+                @world.process
+            end
+        end
+        Curses.close_screen
+    end
 end
 
-game = ConnectFour.new
-game.start
+ConnectFour.new.start
